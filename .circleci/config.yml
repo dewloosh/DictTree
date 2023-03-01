@@ -11,7 +11,7 @@ orbs:
 jobs:
   build_test:
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/python:3.8.4
     steps:
       - checkout  # checkout source code to working directory
       - python/install-packages:
@@ -32,7 +32,7 @@ jobs:
   
   test_pypi_publish:
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/python:3.8.4
     steps:
       - checkout  # checkout source code to working directory
       - run:
@@ -44,7 +44,7 @@ jobs:
 
   pypi_publish:
     docker:
-      - image: circleci/python:3.8
+      - image: cimg/python:3.8.4
     steps:
       - checkout  # checkout source code to working directory
       - run:
@@ -61,7 +61,7 @@ jobs:
     # The executor is the environment in which the steps below will be executed - below will use a python 3.9 container
     # Change the version below to your required version of python
     docker:
-      - image: cimg/python:3.8
+      - image: cimg/python:3.8.4
     # Checkout the code as the first step. This is a dedicated CircleCI step.
     # The python orb's install-packages step will install the dependencies from a Pipfile via Pipenv by default.
     # Here we're making sure we use just use the system-wide pip. By default it uses the project root's requirements.txt.

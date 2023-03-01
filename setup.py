@@ -39,7 +39,7 @@ with open('requirements.txt') as f:
 _init_path = "src/dicttree/__init__.py"
 _version = get_version(_init_path)
 _description = get_description(_init_path)
-_url = 'https://github.com/DewLoosh/DictTree'
+_url = 'https://github.com/dewloosh/DictTree'
 _download_url = _url + '/archive/refs/tags/{}.zip'.format(_version)
 
 
