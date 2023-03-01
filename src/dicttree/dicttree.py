@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # http://stackoverflow.com/a/6190500/562769
 from typing import Hashable, Union, Tuple, Any
+
 try:
     from collections.abc import Iterable
 except ImportError:
@@ -10,7 +11,7 @@ import six
 from .tools.dtk import dictparser, parseitems, parseaddress, parsedicts
 
 
-__all__ = ['DictTree']
+__all__ = ["DictTree"]
 
 
 NoneType = type(None)
@@ -20,49 +21,51 @@ def issequence(arg) -> bool:
     """
     Returns `True` if `arg` is any kind of iterable, but not a string,
     returns `False` otherwise.
-    
+
     Examples
     --------
     The formatter to use to print a floating point number with 4 digits:
-    
+
     >>> from dewloosh.core.tools import issequence
     >>> issequence([1, 2])
     True
-    
+
     To print the actual value as a string:
-    
+
     >>> issequence('lorem ipsum')
-    False    
+    False
     """
-    return (
-        isinstance(arg, Iterable)
-        and not isinstance(arg, six.string_types)
-    )  
+    return isinstance(arg, Iterable) and not isinstance(arg, six.string_types)
 
 
 class DictTree(dict):
     """
-    An nested dictionary class with a self-replicating default factory. 
-    It can be a drop-in replacement for the bulit-in dictionary type, 
+    An nested dictionary class with a self-replicating default factory.
+    It can be a drop-in replacement for the bulit-in dictionary type,
     but it's more capable as it handles nested layouts.
-    
+
     Examples
     --------
     Basic usage:
-    
+
     >>> from ldd import DictTree
     >>> d = {'a' : {'aa' : {'aaa' : 0}}, 'b' : 1, 'c' : {'cc' : 2}}
     >>> dd = DictTree(d)
     >>> list(dd.values(deep=True))
     [0, 1, 2]
-    
+
     See the docs for more use cases!
-        
+
     """
-    
-    def __init__(self, *args, parent:'DictTree'=None, 
-                 root:'DictTree'=None, locked:bool=None, 
-                 **kwargs):
+
+    def __init__(
+        self,
+        *args,
+        parent: "DictTree" = None,
+        root: "DictTree" = None,
+        locked: bool = None,
+        **kwargs
+    ):
         """
         Returns a `DictTree` instance.
 
@@ -74,11 +77,11 @@ class DictTree(dict):
             Parent `DictTree` instance. Default is `None`.
         root : `DictTree`, Optional
             The top-level object. It is automatically set when creating nested
-            layouts, but may be explicitly provided. Default is `None`. 
+            layouts, but may be explicitly provided. Default is `None`.
         locked : bool or NoneType, Optional
             If the object is locked, it reacts to missing keys as a regular dictionary would.
             If it is not, a new level and a new child is created (see the examples in the docs).
-            A `None` value means that in terms of locking, the state of the object 
+            A `None` value means that in terms of locking, the state of the object
             is inherited from its parent. Default is `None`.
         **kwargs : tuple, Optional
             Extra keyword arguments are forwarded to the `dict` class.
@@ -92,15 +95,15 @@ class DictTree(dict):
         self._root = root
         self._locked = locked
         self._key = None
-        
+
     @property
     def key(self) -> Union[Hashable, NoneType]:
         """
-        Returns the key of the dictionary in its parent, or `None` if the 
+        Returns the key of the dictionary in its parent, or `None` if the
         object is the root.
         """
         return self._key
-           
+
     @property
     def locked(self) -> bool:
         """
@@ -109,7 +112,9 @@ class DictTree(dict):
         if self.parent is None:
             return self._locked if isinstance(self._locked, bool) else False
         else:
-            return self._locked if isinstance(self._locked, bool) else self.parent.locked
+            return (
+                self._locked if isinstance(self._locked, bool) else self.parent.locked
+            )
 
     @property
     def depth(self) -> int:
@@ -120,7 +125,7 @@ class DictTree(dict):
             return 0
         else:
             return self.parent.depth + 1
-        
+
     @property
     def address(self) -> Tuple:
         """Returns the address of an item."""
@@ -147,7 +152,7 @@ class DictTree(dict):
         items becomes an option.
         """
         self._locked = False
-        
+
     def root(self):
         """
         Returns the top-level object in a nested layout.
@@ -166,11 +171,17 @@ class DictTree(dict):
         """
         return self.parent is None
 
-    def containers(self, *args, inclusive:bool=False, deep:bool=True, 
-                   dtype:Any=None, **kwargs):
+    def containers(
+        self,
+        *args,
+        inclusive: bool = False,
+        deep: bool = True,
+        dtype: Any = None,
+        **kwargs
+    ):
         """
         Returns all the containers in a nested layout. A dictionary in a nested layout
-        is called a container, only if it contains other containers (it is a parent). 
+        is called a container, only if it contains other containers (it is a parent).
 
         Parameters
         ----------
@@ -201,19 +212,19 @@ class DictTree(dict):
         >>> [c.key for c in data.containers()]
         ['a', 'b']
 
-        We can see, that dictionaries 'a' and 'b' are returned as containers, but 'c' 
-        isn't,  because it is not a parent, there are no deeper levels. 
+        We can see, that dictionaries 'a' and 'b' are returned as containers, but 'c'
+        isn't,  because it is not a parent, there are no deeper levels.
 
         >>> [c.key for c in data.containers(inclusive=True, deep=True)]
         [None, 'a', 'b']
 
-        >>> [c.key for c in data.containers(inclusive=True, deep=False)]     
+        >>> [c.key for c in data.containers(inclusive=True, deep=False)]
         [None, 'a']
 
-        >>> [c.key for c in data.containers(inclusive=False, deep=True)]       
+        >>> [c.key for c in data.containers(inclusive=False, deep=True)]
         ['a', 'b']
 
-        >>> [c.key for c in data.containers(inclusive=False, deep=False)]      
+        >>> [c.key for c in data.containers(inclusive=False, deep=False)]
         ['a']
 
         """
@@ -230,7 +241,7 @@ class DictTree(dict):
             return self.__missing__(key)
         except KeyError:
             return self.__missing__(key)
-        
+
     def __delitem__(self, key):
         if self.locked:
             raise RuntimeError("The object is locked!")
@@ -285,25 +296,25 @@ class DictTree(dict):
         else:
             self[key] = value = self.__class__()
             return value
-        
+
     def __reduce__(self):
         return self.__class__, tuple(), None, None, self.items()
-    
+
     def __repr__(self):
-        frmtstr = self.__class__.__name__ + '(%s)'
+        frmtstr = self.__class__.__name__ + "(%s)"
         return frmtstr % (dict.__repr__(self))
-       
+
     def __leave_parent__(self):
         self.parent = None
         self._root = None
         self._key = None
-            
+
     def __join_parent__(self, parent, key: Hashable = None):
         self.parent = parent
         self._root = parent.root()
         self._key = key
 
-    def items(self, *args, deep:bool=False, return_address:bool=False, **kwargs):
+    def items(self, *args, deep: bool = False, return_address: bool = False, **kwargs):
         if deep:
             if return_address:
                 for addr, v in dictparser(self):
@@ -315,7 +326,7 @@ class DictTree(dict):
             for k, v in super().items():
                 yield k, v
 
-    def values(self, *args, deep:bool=False, return_address:bool=False, **kwargs):
+    def values(self, *args, deep: bool = False, return_address: bool = False, **kwargs):
         if deep:
             if return_address:
                 for addr, v in dictparser(self):
@@ -327,7 +338,7 @@ class DictTree(dict):
             for v in super().values():
                 yield v
 
-    def keys(self, *args, deep:bool=False, return_address:bool=False, **kwargs):
+    def keys(self, *args, deep: bool = False, return_address: bool = False, **kwargs):
         if deep:
             if return_address:
                 for addr, _ in dictparser(self):

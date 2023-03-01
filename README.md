@@ -1,2 +1,3 @@
 # DictTree
-A pure python package to handle nested dictionaries in Python.
+
+A pure Python package to handle nested dictionaries in Python.

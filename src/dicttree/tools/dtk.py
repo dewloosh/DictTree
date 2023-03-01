@@ -51,8 +51,7 @@ def parseitems(d: dict = None, *args, dtype=dict, **kwargs):
             yield key, value
 
 
-def parsedicts(d: dict = None, *args, inclusive=True, dtype=dict,
-               deep=True, **kwargs):
+def parsedicts(d: dict = None, *args, inclusive=True, dtype=dict, deep=True, **kwargs):
     if inclusive:
         if isinstance(d, dtype):
             yield d
@@ -60,13 +59,13 @@ def parsedicts(d: dict = None, *args, inclusive=True, dtype=dict,
         if isinstance(value, dtype):
             yield value
             if deep:
-                for subvalue in \
-                        parsedicts(value, inclusive=False, dtype=dtype):
+                for subvalue in parsedicts(value, inclusive=False, dtype=dtype):
                     yield subvalue
-                    
-                    
-def parsedicts_addr(d: dict = None, address=[], *args, inclusive=True,
-                    dtype=dict, deep=True, **kwargs):
+
+
+def parsedicts_addr(
+    d: dict = None, address=[], *args, inclusive=True, dtype=dict, deep=True, **kwargs
+):
     if inclusive:
         if isinstance(d, dtype):
             yield address, d
@@ -76,8 +75,7 @@ def parsedicts_addr(d: dict = None, address=[], *args, inclusive=True,
             addr.append(key)
             yield addr, value
             if deep:
-                for subaddr, subval in \
-                    parsedicts_addr(value, addr,
-                                    inclusive=False, dtype=dtype):
+                for subaddr, subval in parsedicts_addr(
+                    value, addr, inclusive=False, dtype=dtype
+                ):
                     yield subaddr, subval
-                    
